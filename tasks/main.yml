@@ -7,7 +7,7 @@
 - name: Install additional packages to modify VSC qcow image and run VSC as VM - RedHat Host
   yum: name={{ item }} state=present
   with_items:
-   - qemu-kvm
+   - kvm
    - libvirt
    - bridge-utils
    - libguestfs-tools

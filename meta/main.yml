@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  author: Remi Vichery
+  description: Deploy Nuage Networks VSC on a KVM hypervisor
+  license: MIT
+  min_ansible_version: 1.4
+  plaftorms:
+  - name: EL
+    versions:
+    - all
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  categories:
+    - networking
+dependencies: []

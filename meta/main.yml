@@ -4,16 +4,16 @@ galaxy_info:
   description: Deploy Nuage Networks VSC on a KVM hypervisor
   license: MIT
   min_ansible_version: 1.4
-  plaftorms:
-  - name: EL
-    versions:
-    - all
-  - name: Ubuntu
-    versions:
-    - all
-  - name: Debian
-    versions:
-    - all
-  categories:
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
     - networking
 dependencies: []

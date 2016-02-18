@@ -1,5 +1,7 @@
 # Ansible Role: Nuage VSC installer
 
+[![Join the chat at https://gitter.im/rvichery/nuage-vsc-installer](https://badges.gitter.im/rvichery/nuage-vsc-installer.svg)](https://gitter.im/rvichery/nuage-vsc-installer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 An Ansible Role that deploys and configures a Nuage Networks VSC. This installer only supports KVM hypervisor.
 
 ## Requirements

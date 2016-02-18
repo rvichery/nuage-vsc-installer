@@ -3,8 +3,7 @@ language: python
 python: "2.7"
 
 env:
-  - PLAYBOOK=test.yml
-  - INVENTORY=inventory
+  - PLAYBOOK=test.yml INVENTORY=inventory
 
 before_install:
   - sudo apt-get update -qq

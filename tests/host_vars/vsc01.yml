@@ -1,0 +1,18 @@
+hypervisor: 10.21.0.40
+interfaces:
+  mgmt:
+    linux_bridge: lan_bd
+    ip: 10.21.0.109
+    netmask_prefix: 24
+  control:
+    linux_bridge: data_bd
+    ip: 10.22.0.109
+    netmask_prefix: 24
+dns:
+  servers:
+    - 10.21.0.251
+  domain: bdteam.local
+system_ip: 1.1.1.1
+ntp_servers:
+  - 10.21.0.251
+vsd_fqdn: "vsd.bdteam.local"

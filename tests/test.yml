@@ -1,0 +1,6 @@
+---
+- hosts: vsc
+  remote_user: root
+  gather_facts: no
+  roles:
+    - nuage-vsc-installer

@@ -35,7 +35,7 @@ Available variables are listed below, along with default values (see `defaults/m
   * The credentials used by the VSC to exchange information with the VSD.
 ```
     xmpp:
-      username: "admin"
+      username: "vscuser"
       password: "9AhVxE42RezG"
 ```
 
@@ -218,6 +218,7 @@ For example:
 
 *Inside `host_vars/vsc_test01.yourdomain.com.yml`*:
 
+    hypervisor: 10.21.0.40
     interfaces:
       mgmt:
         ip: 10.21.1.40
@@ -227,6 +228,7 @@ For example:
 
 *Inside `host_vars/vsc_test02.yourdomain.com.yml`*:
 
+    hypervisor: 10.21.0.41
     interfaces:
       mgmt:
         ip: 10.21.1.43

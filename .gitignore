@@ -1,3 +1,2 @@
 files/vsc_singledisk.qcow2
-tests/
-tests/*
+ansible.cfg

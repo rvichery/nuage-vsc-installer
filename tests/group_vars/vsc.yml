@@ -1,0 +1,14 @@
+interfaces:
+  mgmt:
+    linux_bridge: lan_bd
+    netmask_prefix: 24
+  control:
+    linux_bridge: data_bd
+    netmask_prefix: 24
+dns:
+  servers:
+    - 10.0.0.5
+  domain: mydomain.com
+ntp_servers:
+  - 10.0.0.5
+vsd_fqdn: "vsd.mydomain.com"

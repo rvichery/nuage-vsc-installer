@@ -1,0 +1,8 @@
+hypervisor: hypervisors02
+interfaces:
+  mgmt:
+    ip: 10.0.0.101
+  control:
+    ip: 10.1.0.101
+
+system_ip: 1.1.1.2

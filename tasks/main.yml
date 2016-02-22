@@ -26,14 +26,6 @@
   when: ansible_os_family == "Debian"
   delegate_to: "{{ hypervisor }}"
 
-- name: List the Virtual Machine
-  virt: command=list_vms
-  register: virt_vms
-  delegate_to: "{{ hypervisor }}"
-
-- fail: msg="The VM {{ inventory_hostname }} is already defined on this hypervisor."
-  when: inventory_hostname in virt_vms.list_vms
-
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_os_family }}.yml"
 
@@ -43,43 +35,23 @@
   delegate_to: "{{ hypervisor }}"
 
 - name: Copy over VSC qcow2 image
-  copy: src={{ vsc_qcow2 }} dest={{ images_path }}{{ inventory_hostname }}/{{ inventory_hostname }}.qcow2 owner={{ libvirt.user }} group={{ libvirt.group }}
+  copy: src={{ vsc_qcow2 }} dest={{ images_path }}{{ inventory_hostname }}/{{ inventory_hostname }}-src.qcow2 owner={{ libvirt.user }} group={{ libvirt.group }}
   delegate_to: "{{ hypervisor }}"
+  register: qcowcopy
 
-# Configure VSC
+# Copy VSC Configuration files to target host
 - name: Setup VSC temporary configuration files
   template: src={{ item }}.j2 backup=no dest={{ images_path }}{{ inventory_hostname }}/{{ item }}
   delegate_to: "{{ hypervisor }}"
   with_items:
     - bof.cfg
     - config.cfg
+  register: configcopy
 
-- name: Copy temporary configuration files to the VSC image
-  shell: guestfish --rw -a {{ images_path }}{{ inventory_hostname }}/{{ inventory_hostname }}.qcow2 -m {{ vsc_partition }} copy-in {{ images_path }}{{ inventory_hostname }}/{{ item }} /
-  delegate_to: "{{ hypervisor }}"
-  with_items:
-    - bof.cfg
-    - config.cfg
-
-- name: Remove temporary configuration files
-  file: path={{ images_path }}{{ inventory_hostname }}/{{ item }} state=absent
-  delegate_to: "{{ hypervisor }}"
-  with_items:
-    - bof.cfg
-    - config.cfg
-
-# Define VSC guest VM
-- name: Get a list of VMs
-  virt: command=list_vms
-  register: virt_vms
-  delegate_to: "{{ hypervisor }}"
-
-- name: Define VSC guest VM
-  virt: name={{ inventory_hostname }}
-        command=define
-        xml="{{ lookup('template', 'vsc.xml.j2') }}"
-  when: inventory_hostname not in virt_vms.list_vms
-  delegate_to: "{{ hypervisor }}"
+# (Re-)Define VSCVM
+- name: (Re-)Define VSC VM
+  include: definevscvm.yml
+  when: configcopy.changed or qcowcopy.changed 
 
 # Start VSC
 - name: Start VSC guest VM

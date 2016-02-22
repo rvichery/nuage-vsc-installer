@@ -3,7 +3,8 @@
 [![Join the chat at https://gitter.im/rvichery/nuage-vsc-installer](https://badges.gitter.im/rvichery/nuage-vsc-installer.svg)](https://gitter.im/rvichery/nuage-vsc-installer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/rvichery/nuage-vsc-installer.svg?branch=master)](https://travis-ci.org/rvichery/nuage-vsc-installer)
 
-An Ansible Role that deploys and configures a Nuage Networks VSC. This installer only supports KVM hypervisor.
+An Ansible Role that deploys, upgrades and configures a Nuage Networks VSC VM on top of a KVM Hypervisor.
+The role is idempotent and will finish with VSC VM up and running. Upon change of an input variable or input binary, the role will undeploy the VSC Guest VM and re-deploy it with the updated configuration or updated binary.
 
 ## Requirements
 
@@ -139,6 +140,7 @@ None.
     - hosts: vsc
       user: root
       gather_facts: no
+      serial: 1
       roles:
         - nuage-vsc-installer
 

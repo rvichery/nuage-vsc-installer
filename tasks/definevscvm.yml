@@ -31,7 +31,7 @@
 - name: Define VSC guest VM
   virt: name={{ inventory_hostname }}
         command=define
-        xml="{{ lookup('template', 'vsc.xml.j2') }}"
+        xml="{{ lookup('template', role_path + '/templates/vsc.xml.j2') }}"
   delegate_to: "{{ hypervisor }}"
 
 

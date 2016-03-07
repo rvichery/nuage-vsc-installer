@@ -34,12 +34,6 @@ Available variables are listed below, along with default values (see `defaults/m
 ```
     as_number: 65000
 ```
-  * The credentials used by the VSC to exchange information with the VSD.
-```
-    xmpp:
-      username: "vscuser"
-      password: "9AhVxE42RezG"
-```
 
 ## Host Variables
 
@@ -85,6 +79,13 @@ Each VSC host variables file must contain:
     ntp_servers:
       - 10.21.0.251
       - 10.21.0.252 (optional)
+```
+
+  * (Optionally) The XMPP credentials used by the VSC to exchange information with the VSD. If none are specified, the hostname from the Ansible inventory will be taken as username.
+```
+    xmpp:
+      username: "vscuser"
+      password: "9AhVxE42RezG"
 ```
 
 ## Dependencies

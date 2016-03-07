@@ -19,7 +19,13 @@ echo "System Configuration"
 echo "Virtual Switch Controller Configuration"
 #--------------------------------------------------
     vswitch-controller
+{% if xmpp is defined and xmpp.username is defined and xmpp.password is defined %}
         xmpp-server "{{ xmpp.username }}:{{ xmpp.password }}@{{ vsd_fqdn }}"
+{% elif xmpp is defined and xmpp.username is defined %}
+        xmpp-server "{{ xmpp.username }}@{{ vsd_fqdn }}"
+{% else %}
+        xmpp-server "{{ inventory_hostname }}@{{ vsd_fqdn }}"
+{% endif %}
         open-flow
         exit
         xmpp

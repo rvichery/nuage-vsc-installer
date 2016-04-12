@@ -46,6 +46,7 @@
   with_items:
     - bof.cfg
     - config.cfg
+    - vsc.xml
   register: configcopy
 
 # (Re-)Define VSCVM

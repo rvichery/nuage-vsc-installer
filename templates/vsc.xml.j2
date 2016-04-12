@@ -1,15 +1,17 @@
 <domain type='{{domain_type}}'>
   <name>{{ inventory_hostname }}</name>
   <description>Timos VM</description>
-  <memory>4147483</memory>
-  <currentMemory>4147483</currentMemory>
+  <memory>{{ memory | default(4147483) }}</memory>
+  <currentMemory>{{ memory | default(4147483) }}</currentMemory>
   <vcpu current='4'>4</vcpu>
+{%if domain_type != 'qemu' %}
   <cputune>
     <vcpupin vcpu='0' cpuset='0'/>
     <vcpupin vcpu='1' cpuset='1'/>
     <vcpupin vcpu='2' cpuset='2'/>
     <vcpupin vcpu='3' cpuset='3'/>
   </cputune>
+{% endif %}
   <os>
     <type arch='x86_64'>hvm</type>
     <smbios mode='sysinfo'/>

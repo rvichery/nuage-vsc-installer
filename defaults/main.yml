@@ -1,6 +1,7 @@
 ---
 # defaults file for common
 domain_type: kvm
+memory: 4147483
 list_of_vscs: "{{ groups['vsc'] }}"
 images_path: "/var/lib/libvirt/images/"
 vsc_qcow2: "vsc_singledisk.qcow2"

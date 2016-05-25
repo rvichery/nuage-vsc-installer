@@ -49,16 +49,18 @@ Each VSC host variables file must contain:
 ```
     vsd_fqdn: "vsd.yourdomain.com"
 ```
-  * The network information for the Management and the Control interfaces. The linux bridges are not created by this role, you should create them before using this role.
+  * The network information for the Management and the Control interfaces. The linux bridges are not created by this role, you should create them before using this role. A gateway parameter can be provided if you like to have a default route to be configured with the specified gateway IP address as next-hop.
 ```
     interfaces:
       mgmt:
         linux_bridge: test
         ip: 10.21.1.40
+        gw: 10.21.1.1
         netmask_prefix: 24
       control:
         linux_bridge: test
         ip: 10.21.1.41
+        gw: 10.21.1.1
         netmask_prefix: 24
 ```
   * The DNS information. The VSC needs to have **at least one** DNS server.
@@ -197,19 +199,21 @@ None.
       - 10.21.0.252
     vsd_fqdn: "vsd.yourdomain.com"
 
-If you have redundant information in your VSC host variables files, create a new folder/file group_vars/vsc.yml in your playbook directory and add the redundant variables in this file. These variables will be shared between the VSC.
+If you have redundant information in your VSC host variables files, create a new folder/file group_vars/vsc in your playbook directory and add the redundant variables in this file. These variables will be shared between the VSC. Note that you have to configure `hash_behaviour = merge` in your `ansible.cfg` file to ensure proper popuplation of variables.
 
 For example:  
 
-*Inside `group_vars/vsc.yml`*:
+*Inside `group_vars/vsc`*:
 
     interfaces:
       mgmt:
         linux_bridge: test
         netmask_prefix: 24
+        gw: 10.21.1.1
       control:
         linux_bridge: test
         netmask_prefix: 24
+        gw: 10.21.1.1
     dns:
       servers:
         - 10.21.0.251

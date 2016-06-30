@@ -55,7 +55,7 @@ echo "Router (Network Side) Configuration"
         router-id {{ system_ip }}
 {% endif %}
 {% if interfaces.control.gw is defined %}
-        static-route 0.0.0.0/0 via {{ interfaces.control.gw }}
+        static-route 0.0.0.0/0 next-hop {{ interfaces.control.gw }}
 {% else %}
 {%  for vsc_item in list_of_vscs %}
 {%   if vsc_item != inventory_hostname %}

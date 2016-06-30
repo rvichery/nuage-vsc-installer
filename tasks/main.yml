@@ -26,6 +26,10 @@
   when: ansible_os_family == "Debian"
   delegate_to: "{{ hypervisor }}"
 
+- name: Start libvirt service
+  service: name=libvirtd state=started enabled=yes
+  delegate_to: "{{ hypervisor }}"
+
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_os_family }}.yml"
 
@@ -49,10 +53,16 @@
     - vsc.xml
   register: configcopy
 
+# Check if VSC is running
+- name: get guest info
+  virt: command=info
+  register: virt_info
+  delegate_to: "{{ hypervisor }}"
+
 # (Re-)Define VSCVM
 - name: (Re-)Define VSC VM
   include: definevscvm.yml
-  when: configcopy.changed or qcowcopy.changed 
+  when: configcopy.changed or qcowcopy.changed or virt_info[inventory_hostname]['state'] != 'running'
 
 # Start VSC
 - name: Start VSC guest VM

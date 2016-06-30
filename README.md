@@ -72,7 +72,7 @@ Each VSC host variables file must contain:
         - 10.21.0.253 (optional)
       domain: yourdomain.com
 ```
-  * A system IP, used to identify the VSC in a "cluster". The system IP is also used to configure the BGP peering.
+  * (Optionally) A system IP, used to identify the VSC in a "cluster". The system IP is used to configure the BGP peering. If the system IP is omitted, the control IP will be used as the source IP for the BGP peering.
 ```
     system_ip: 1.1.1.1
 ```

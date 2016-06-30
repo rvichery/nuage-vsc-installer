@@ -1,8 +1,9 @@
 <domain type='{{domain_type}}'>
   <name>{{ inventory_hostname }}</name>
   <description>Timos VM</description>
-  <memory>4147483</memory>
-  <currentMemory>4147483</currentMemory>
+  <memory>{{ memory }}</memory>
+  <currentMemory>{{ memory }}</currentMemory>
+{%if domain_type == 'kvm' %}  
   <vcpu current='4'>4</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='0'/>
@@ -10,6 +11,15 @@
     <vcpupin vcpu='2' cpuset='2'/>
     <vcpupin vcpu='3' cpuset='3'/>
   </cputune>
+  <cpu>
+    <topology sockets='4' cores='1' threads='1'/>
+  </cpu>
+{% else %}
+  <vcpu>1</vcpu> 
+  <cpu>
+    <topology sockets='1' cores='1' threads='1'/>
+  </cpu>
+{% endif %}
   <os>
     <type arch='x86_64'>hvm</type>
     <smbios mode='sysinfo'/>
@@ -22,9 +32,6 @@
   <features>
     <apic/>
   </features>
-  <cpu>
-    <topology sockets='4' cores='1' threads='1'/>
-  </cpu>
   <clock offset='utc'>
     <timer name='pit' tickpolicy='catchup'/>
     <timer name='rtc' tickpolicy='catchup'/>

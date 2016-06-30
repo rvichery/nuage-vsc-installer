@@ -1,0 +1,37 @@
+# List running VM
+- name: Get a list of VMs
+  virt: command=list_vms
+  register: virt_vms
+  delegate_to: "{{ hypervisor }}"
+
+# Destroy if running VSC Guest VM
+- name: Destroy VSC Guest VM if still running
+  virt: name={{ inventory_hostname }} state=destroyed
+  delegate_to: "{{ hypervisor }}"
+  when: inventory_hostname in virt_vms.list_vms  
+
+# Undefine any previously existing VSC Guest VM
+- name: Undefine VSC Guest VM if already provisioned
+  virt: name={{ inventory_hostname }} command=undefine
+  delegate_to: "{{ hypervisor }}"
+  when: inventory_hostname in virt_vms.list_vms
+
+- name: Copy over VSC qcow2 image
+  copy: src={{ vsc_qcow2 }} dest={{ images_path }}{{ inventory_hostname }}/{{ inventory_hostname }}.qcow2 owner={{ libvirt.user }} group={{ libvirt.group }}
+  delegate_to: "{{ hypervisor }}"    
+
+- name: Copy temporary configuration files to the VSC image
+  shell: guestfish --rw -a {{ images_path }}{{ inventory_hostname }}/{{ inventory_hostname }}.qcow2 -m {{ vsc_partition }} copy-in {{ images_path }}{{ inventory_hostname }}/{{ item }} /
+  delegate_to: "{{ hypervisor }}"
+  with_items:
+    - bof.cfg
+    - config.cfg
+
+# Define new VSC Guest VM
+- name: Define VSC guest VM
+  virt: name={{ inventory_hostname }}
+        command=define
+        xml="{{ lookup('template', role_path + '/templates/vsc.xml.j2') }}"
+  delegate_to: "{{ hypervisor }}"
+
+

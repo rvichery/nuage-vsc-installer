@@ -3,7 +3,8 @@
 [![Join the chat at https://gitter.im/rvichery/nuage-vsc-installer](https://badges.gitter.im/rvichery/nuage-vsc-installer.svg)](https://gitter.im/rvichery/nuage-vsc-installer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/rvichery/nuage-vsc-installer.svg?branch=master)](https://travis-ci.org/rvichery/nuage-vsc-installer)
 
-An Ansible Role that deploys and configures a Nuage Networks VSC. This installer only supports KVM hypervisor.
+An Ansible Role that deploys, upgrades and configures a Nuage Networks VSC VM on top of a KVM Hypervisor.
+The role is idempotent and will finish with VSC VM up and running. Upon change of an input variable or input binary, the role will undeploy the VSC Guest VM and re-deploy it with the updated configuration or updated binary.
 
 ## Requirements
 
@@ -33,12 +34,6 @@ Available variables are listed below, along with default values (see `defaults/m
 ```
     as_number: 65000
 ```
-  * The credentials used by the VSC to exchange information with the VSD.
-```
-    xmpp:
-      username: "vscuser"
-      password: "9AhVxE42RezG"
-```
 
 ## Host Variables
 
@@ -54,16 +49,18 @@ Each VSC host variables file must contain:
 ```
     vsd_fqdn: "vsd.yourdomain.com"
 ```
-  * The network information for the Management and the Control interfaces. The linux bridges are not created by this role, you should create them before using this role.
+  * The network information for the Management and the Control interfaces. The linux bridges are not created by this role, you should create them before using this role. A gateway parameter can be provided if you like to have a default route to be configured with the specified gateway IP address as next-hop.
 ```
     interfaces:
       mgmt:
         linux_bridge: test
         ip: 10.21.1.40
+        gw: 10.21.1.1
         netmask_prefix: 24
       control:
         linux_bridge: test
         ip: 10.21.1.41
+        gw: 10.21.1.1
         netmask_prefix: 24
 ```
   * The DNS information. The VSC needs to have **at least one** DNS server.
@@ -75,7 +72,7 @@ Each VSC host variables file must contain:
         - 10.21.0.253 (optional)
       domain: yourdomain.com
 ```
-  * A system IP, used to identify the VSC in a "cluster". The system IP is also used to configure the BGP peering.
+  * (Optionally) A system IP, used to identify the VSC in a "cluster". The system IP is used to configure the BGP peering. If the system IP is omitted, the control IP will be used as the source IP for the BGP peering.
 ```
     system_ip: 1.1.1.1
 ```
@@ -84,6 +81,13 @@ Each VSC host variables file must contain:
     ntp_servers:
       - 10.21.0.251
       - 10.21.0.252 (optional)
+```
+
+  * (Optionally) The XMPP credentials used by the VSC to exchange information with the VSD. If none are specified, the hostname from the Ansible inventory will be taken as username.
+```
+    xmpp:
+      username: "vscuser"
+      password: "9AhVxE42RezG"
 ```
 
 ## Dependencies
@@ -139,6 +143,7 @@ None.
     - hosts: vsc
       user: root
       gather_facts: no
+      serial: 1
       roles:
         - nuage-vsc-installer
 
@@ -194,19 +199,21 @@ None.
       - 10.21.0.252
     vsd_fqdn: "vsd.yourdomain.com"
 
-If you have redundant information in your VSC host variables files, create a new folder/file group_vars/vsc.yml in your playbook directory and add the redundant variables in this file. These variables will be shared between the VSC.
+If you have redundant information in your VSC host variables files, create a new folder/file group_vars/vsc in your playbook directory and add the redundant variables in this file. These variables will be shared between the VSC. Note that you have to configure `hash_behaviour = merge` in your `ansible.cfg` file to ensure proper popuplation of variables.
 
 For example:  
 
-*Inside `group_vars/vsc.yml`*:
+*Inside `group_vars/vsc`*:
 
     interfaces:
       mgmt:
         linux_bridge: test
         netmask_prefix: 24
+        gw: 10.21.1.1
       control:
         linux_bridge: test
         netmask_prefix: 24
+        gw: 10.21.1.1
     dns:
       servers:
         - 10.21.0.251

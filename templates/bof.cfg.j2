@@ -7,6 +7,9 @@ wait                 3
 persist              off
 console-speed        115200
 address          {{ interfaces.mgmt.ip }}/{{ interfaces.mgmt.netmask_prefix }}
+{% if interfaces.mgmt.gw is defined %}
+static-route     0.0.0.0/0 next-hop {{ interfaces.mgmt.gw }} 
+{% endif %}
 primary-dns      {{ dns.servers[0] }}
 {% if dns.servers[1] is defined %}
 secondary-dns    {{ dns.servers[1] }}
